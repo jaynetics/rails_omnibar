@@ -5,7 +5,7 @@
 
 Add an Omnibar to Ruby on Rails.
 
-<!-- TODO: add screenshot -->
+![Screenshot](https://user-images.githubusercontent.com/10758879/213940403-68400aab-6cc6-40ca-82fb-af049f07581b.gif)
 
 ## Installation
 
