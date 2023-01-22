@@ -1,6 +1,6 @@
 require 'rails'
 
-Dir[File.join(__dir__, 'rails_omnibar', '**', '*.rb')].each { |f| require(f) }
+Dir[File.join(__dir__, 'rails_omnibar', '**', '*.rb')].sort.each { |f| require(f) }
 
 class RailsOmnibar
   singleton_class.alias_method :configure, :tap
