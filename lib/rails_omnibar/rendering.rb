@@ -1,11 +1,9 @@
 class RailsOmnibar
-  URLS = RailsOmnibar::Engine.routes.url_helpers
-
   cattr_accessor(:max_results) { 10 }
 
   def self.render
     @cached_html ||= <<~HTML.html_safe
-      <script src='#{URLS.js_path}?v=#{RailsOmnibar::VERSION}' type='text/javascript'></script>
+      <script src='#{urls.js_path}?v=#{RailsOmnibar::VERSION}' type='text/javascript'></script>
       <div id='mount-rails-omnibar'>
         <script type="application/json">#{to_json}</script>
       </div>
@@ -23,8 +21,12 @@ class RailsOmnibar
       maxResults:     max_results,
       modal:          modal?,
       placeholder:    placeholder,
-      queryPath:      URLS.query_path(omnibar_class: self),
+      queryPath:      urls.query_path(omnibar_class: self),
     }
+  end
+
+  def self.urls
+    @urls ||= RailsOmnibar::Engine.routes.url_helpers
   end
 
   private_class_method\
