@@ -1,6 +1,4 @@
 class RailsOmnibar
-  cattr_accessor(:max_results) { 10 }
-
   def self.render
     @cached_html ||= <<~HTML.html_safe
       <script src='#{urls.js_path}?v=#{RailsOmnibar::VERSION}' type='text/javascript'></script>

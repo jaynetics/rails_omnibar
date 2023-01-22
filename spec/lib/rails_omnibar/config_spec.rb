@@ -3,20 +3,31 @@ require 'rails_helper'
 describe RailsOmnibar do
   subject { Class.new(RailsOmnibar) }
 
+  it 'has a configurable max_results' do
+    expect(subject.max_results).to eq 10
+    subject.max_results = 5
+    expect(subject.max_results).to eq 5
+    expect { subject.max_results = 0 }.to raise_error(ArgumentError)
+    expect { subject.max_results = '5' }.to raise_error(ArgumentError)
+    expect { subject.max_results = 5.0 }.to raise_error(ArgumentError)
+  end
+
   it 'has a configurable hotkey' do
     expect(subject.hotkey).to eq 'k'
     subject.hotkey = 'z'
     expect(subject.hotkey).to eq 'z'
     subject.hotkey = 'K' # should be downcased
     expect(subject.hotkey).to eq 'k'
+    expect { subject.hotkey = '' }.to raise_error(ArgumentError)
+    expect { subject.hotkey = 'kk' }.to raise_error(ArgumentError)
   end
 
   it 'has a configurable rendering' do
-    expect(subject.modal?).to eq true
-    subject.modal = false
     expect(subject.modal?).to eq false
     subject.modal = true
     expect(subject.modal?).to eq true
+    subject.modal = false
+    expect(subject.modal?).to eq false
   end
 
   it 'has a configurable calculator' do
