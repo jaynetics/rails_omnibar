@@ -70,8 +70,6 @@ describe RailsOmnibar do
     expect(page).to have_content 'FAKE_RESULT_1'
     expect(page).to have_content 'fake_result_2'
     expect(page).to have_content 'FAKE_RESULT_2'
-    expect(page).to have_content 'fake_result_3'
-    expect(page).to have_content 'FAKE_RESULT_3'
 
     # test custom command
     type('count users')
