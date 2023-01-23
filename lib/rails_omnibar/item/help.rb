@@ -1,5 +1,5 @@
 class RailsOmnibar
-  def self.add_help(**kwargs)
+  def add_help(**kwargs)
     add_item Item::Help.new(for_commands: commands, **kwargs)
     self.class
   end

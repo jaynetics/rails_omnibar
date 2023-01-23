@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe RailsOmnibar do
-  subject { Class.new(RailsOmnibar) }
+  subject { Class.new(RailsOmnibar).configure }
 
   it 'has a configurable max_results' do
     expect(subject.max_results).to eq 10

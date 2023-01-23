@@ -1,13 +1,13 @@
 class RailsOmnibar
-  def self.handle(input)
+  def handle(input)
     commands.find { |h| h.pattern.match?(input) }&.then { |h| h.call(input, self) } || []
   end
 
-  def self.command_pattern
+  def command_pattern
     commands.any? ? Regexp.union(commands.map(&:pattern)) : /$NO_COMMANDS/
   end
 
-  def self.add_command(command)
+  def add_command(command)
     commands << RailsOmnibar.cast_to_command(command)
     clear_cache
     self
@@ -21,8 +21,9 @@ class RailsOmnibar
     end
   end
 
-  private_class_method\
-  def self.commands
+  private
+
+  def commands
     @commands ||= []
   end
 end

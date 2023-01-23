@@ -1,9 +1,9 @@
 class RailsOmnibar
-  def self.add_search(**kwargs)
+  def add_search(**kwargs)
     add_command Command::Search.new(**kwargs)
   end
 
-  def self.add_record_search(**kwargs)
+  def add_record_search(**kwargs)
     add_command Command::RecordSearch.new(**kwargs)
   end
 

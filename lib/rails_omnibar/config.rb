@@ -1,32 +1,32 @@
 class RailsOmnibar
-  def self.max_results=(arg)
+  def max_results=(arg)
     arg.is_a?(Integer) && arg > 0 || raise(ArgumentError, 'max_results must be > 0')
     @max_results = arg
   end
-  def self.max_results
+  def max_results
     @max_results || 10
   end
 
-  singleton_class.attr_writer :modal
-  def self.modal?
+  attr_writer :modal
+  def modal?
     instance_variable_defined?(:@modal) ? !!@modal : false
   end
 
-  singleton_class.attr_writer :calculator
-  def self.calculator?
+  attr_writer :calculator
+  def calculator?
     instance_variable_defined?(:@calculator) ? !!@calculator : true
   end
 
-  def self.hotkey
+  def hotkey
     @hotkey || 'k'
   end
-  def self.hotkey=(arg)
+  def hotkey=(arg)
     arg.to_s.size == 1 || raise(ArgumentError, 'hotkey must have length 1')
     @hotkey = arg.to_s.downcase
   end
 
-  singleton_class.attr_writer :placeholder
-  def self.placeholder
+  attr_writer :placeholder
+  def placeholder
     return @placeholder.presence unless @placeholder.nil?
 
     help_item = items.find { |i| i.type == :help }
