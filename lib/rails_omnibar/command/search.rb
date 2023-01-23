@@ -16,7 +16,7 @@ class RailsOmnibar
         resolver = ->(value, omnibar) do
           findings = finder.call(value)
           findings = Array(findings) unless findings.respond_to?(:first)
-          findings.first(omnibar.max_results).map(&itemizer)
+          findings.first(omnibar.max_results).flat_map(&itemizer)
         end
 
         super(resolver: resolver, **kwargs)

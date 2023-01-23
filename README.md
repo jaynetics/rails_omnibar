@@ -143,13 +143,18 @@ MyOmnibar.add_record_search(
   itemizer: ->(user) { { title: "Admin #{user.name}", url: admin_url(user) } }
 )
 
-# Custom search
+# Custom search, plus mapping to multiple results
 MyOmnibar.add_search(
   description: 'Google',
   pattern:     /^g (.+)/,
   example:     'g kittens',
   finder:      ->(value) { GoogleSearch.fetch(value) },
-  itemizer:    ->(entry) { { title: entry.title, url: entry.url } },
+  itemizer:    ->(res) do
+    [
+      { title: res.title, url: res.url },
+      { title: "#{res.title} @archive", url: "web.archive.org/web/#{res.url}" }
+    ]
+  end,
 )
 
 # Completely custom command

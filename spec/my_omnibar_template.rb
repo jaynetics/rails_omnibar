@@ -20,8 +20,13 @@ MyOmnibar = RailsOmnibar.configure do |c|
   c.add_search(
     pattern:     /^g (.+)/,
     example:     'g kittens',
-    finder:      ->(input) { [:fake_result_1, :fake_result_2, :fake_result_3] },
-    itemizer:    ->(entry) { { title: entry, url: "/#{entry}" } },
+    finder:      ->(input) { %i[fake_result_1 fake_result_2 fake_result_3] },
+    itemizer:    ->(entry) do
+      [
+        { title: entry, url: '/' },
+        { title: entry.to_s.upcase, url: '/' },
+      ]
+    end,
     description: 'Google',
   )
 

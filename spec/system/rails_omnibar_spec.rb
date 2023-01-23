@@ -64,11 +64,14 @@ describe RailsOmnibar do
     expect(page.current_url).to end_with '/users/2'
     send_keys([:control, 'm']) # make omnibar visible again
 
-    # test generic search
+    # test generic search and multi-itemization
     type('g foobar')
     expect(page).to have_content 'fake_result_1'
+    expect(page).to have_content 'FAKE_RESULT_1'
     expect(page).to have_content 'fake_result_2'
+    expect(page).to have_content 'FAKE_RESULT_2'
     expect(page).to have_content 'fake_result_3'
+    expect(page).to have_content 'FAKE_RESULT_3'
 
     # test custom command
     type('count users')
