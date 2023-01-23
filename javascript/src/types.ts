@@ -12,7 +12,7 @@ export type AppArgs = {
 }
 
 export type Item = {
-  title: string
+  title: string | JSX.Element
   url?: string
   modalHTML?: string
   type: "default" | "help"

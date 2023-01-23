@@ -1,4 +1,4 @@
-import {useMemo} from "preact/hooks"
+import React, {useMemo} from "preact/hooks"
 import {AppArgs, Item} from "../types"
 import fuzzysort from "fuzzysort"
 import {tryCalculate} from "yaam"
@@ -19,7 +19,23 @@ const commands = ({commandPattern: p, queryPath}: AppArgs) => {
 }
 
 const items = ({items}: AppArgs) => {
-  return (q: string) => fuzzysort.go(q, items, {key: "title"}).map((r) => r.obj)
+  return (q: string) => {
+    const results = fuzzysort.go(q, items, {key: "title"})
+    return results.map((result) => ({
+      ...result.obj, // Item
+      title: (
+        <>
+          {fuzzysort.highlight(result, (match) => (
+            <span style={staticWidthBoldStyle}>{match}</span>
+          ))}
+        </>
+      ),
+    }))
+  }
+}
+
+const staticWidthBoldStyle = {
+  textShadow: "-0.06ex 0 0 currentColor, 0.06ex 0 0 currentColor",
 }
 
 const calculator = ({calculator}: AppArgs) => {
