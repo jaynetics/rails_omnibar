@@ -5,9 +5,11 @@
   },
   "dependencies": {
     "fuzzysort": "^2.0.4",
-    "omnibar2": "^2.4.1",
+    "lodash.debounce": "^4.0.8",
+    "ninja-keys": "^1.2.2",
     "preact": "^10.11.3",
     "preact-habitat": "^3.3.0",
+    "react-cmdk": "^1.3.8",
     "react-modal": "^3.16.1",
     "yaam": "^1.1.1"
   },
@@ -17,6 +19,7 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.18.6",
+    "@types/lodash.debounce": "^4.0.7",
     "@types/react-modal": "^3.13.1",
     "babel-loader": "^8.2.4",
     "ts-loader": "^9.4.2",

@@ -2,6 +2,8 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
+    "baseUrl": "./",
+    "skipLibCheck": true,
     "outDir": "./javascript/",
     "noImplicitAny": true,
     "module": "es6",

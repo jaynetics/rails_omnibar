@@ -1,8 +1,9 @@
 class RailsOmnibar
   def render
     @cached_html ||= <<~HTML.html_safe
-      <script src='#{urls.js_path}?v=#{RailsOmnibar::VERSION}' type='text/javascript'></script>
       <div id='mount-rails-omnibar'>
+        <script src='#{urls.js_path}?v=#{RailsOmnibar::VERSION}' type='text/javascript'></script>
+        <ninja-keys data-controller='rails-omnibar'></ninja-keys>
         <script type="application/json">#{to_json}</script>
       </div>
     HTML

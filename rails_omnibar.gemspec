@@ -7,8 +7,8 @@ Gem::Specification.new do |spec|
   spec.name          = 'rails_omnibar'
   spec.version       = RailsOmnibar::VERSION
   spec.authors       = ['Janosch Müller']
-  spec.summary       = 'Omnibar for Rails'
-  spec.description   = 'Omnibar for Rails'
+  spec.summary       = 'Omnibar / command palette for Rails'
+  spec.description   = 'Omnibar / command palette for Rails'
   spec.homepage      = 'https://github.com/jaynetics/rails_omnibar'
   spec.license       = 'MIT'
 

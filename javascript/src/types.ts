@@ -1,3 +1,6 @@
+import {DirectiveResult} from "lit/directive.js"
+import {UnsafeHTMLDirective} from "lit/directives/unsafe-html.js"
+
 export const INPUT_DATA_ID = "rails-omnibar"
 
 export type AppArgs = {
@@ -12,10 +15,14 @@ export type AppArgs = {
 }
 
 export type Item = {
-  title: string | JSX.Element
+  title: string | HighlightedTitle
   url?: string
   modalHTML?: string
   type: "default" | "help"
+}
+
+export type HighlightedTitle = DirectiveResult<typeof UnsafeHTMLDirective> & {
+  match: (regexp: RegExp) => boolean
 }
 
 export type JsRegex = {
