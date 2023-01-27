@@ -6,7 +6,6 @@ export const useHotkey = (hotkey: string, action: () => void) => {
       const {metaKey, ctrlKey, key} = e
       if ((metaKey || ctrlKey) && key.toLowerCase() == hotkey) {
         e.preventDefault()
-        e.stopPropagation()
         action()
       }
     },
