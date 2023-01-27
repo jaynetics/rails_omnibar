@@ -43,3 +43,18 @@ end
 
 # ensure fresh js is compiled when packaging the gem
 task build: [:compile_js]
+
+desc 'Launch server of spec/dummy app'
+task :s do
+  sh 'spec/dummy/bin/rails s'
+end
+
+desc 'Use local modified omnibar2 dependency'
+task :dev_js do
+  sh <<~SH
+    npm --prefix ../omnibar2 run build &&
+    rm -rf node_modules/omnibar2 &&
+    cp -r ../omnibar2 ./node_modules &&
+    rake compile_js
+  SH
+end

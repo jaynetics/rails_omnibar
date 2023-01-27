@@ -6,7 +6,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.14",
     "fuzzysort": "^2.0.4",
-    "omnibar2": "^2.4.3",
+    "omnibar2": "^2.4.4",
     "preact": "^10.11.3",
     "preact-habitat": "^3.3.0",
     "react-modal": "^3.16.1",
