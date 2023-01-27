@@ -2,8 +2,11 @@ import {useCallback, useEffect} from "preact/hooks"
 
 export const useHotkey = (hotkey: string, action: () => void) => {
   const onKeyDown = useCallback(
-    ({metaKey, ctrlKey, key}: KeyboardEvent) => {
+    (e: KeyboardEvent) => {
+      const {metaKey, ctrlKey, key} = e
       if ((metaKey || ctrlKey) && key.toLowerCase() == hotkey) {
+        e.preventDefault()
+        e.stopPropagation()
         action()
       }
     },

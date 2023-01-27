@@ -4,22 +4,36 @@ import fuzzysort from "fuzzysort"
 import {tryCalculate} from "yaam"
 
 export const useOmnibarExtensions = (args: AppArgs) => {
-  return useMemo(() => [commands(args), items(args), calculator(args)], [args])
+  return useMemo(
+    () => [
+      suggestedItems(args),
+      commands(args),
+      filteredItems(args),
+      calculator(args),
+    ],
+    [args]
+  )
+}
+
+const suggestedItems = (args: AppArgs) => {
+  return (q: string) => (q ? [] : args.items.filter((e) => e.suggested))
 }
 
 const commands = ({commandPattern: p, queryPath}: AppArgs) => {
   const commandRegexp = useMemo(() => p && new RegExp(p.source, p.options), [p])
 
   return async (q: string) => {
-    if (!queryPath || !commandRegexp?.test(q)) return []
+    if (!q || !queryPath || !commandRegexp?.test(q)) return []
 
     const response = await fetch(`${queryPath}&q=${q}`)
     return await response.json()
   }
 }
 
-const items = ({items}: AppArgs) => {
+const filteredItems = ({items}: AppArgs) => {
   return (q: string) => {
+    if (!q) return []
+
     const results = fuzzysort.go(q, items, {key: "title"})
     return results.map((result) => ({
       ...result.obj, // Item
@@ -40,7 +54,7 @@ const staticWidthBoldStyle = {
 
 const calculator = ({calculator}: AppArgs) => {
   return (q: string) => {
-    const result = calculator ? tryCalculate(q) : null
+    const result = calculator && q ? tryCalculate(q) : null
     if (result !== null) {
       return [{title: String(result), type: "default" as Item["type"]}]
     }

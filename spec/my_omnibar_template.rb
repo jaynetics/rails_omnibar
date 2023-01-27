@@ -1,7 +1,7 @@
 MyOmnibar = RailsOmnibar.configure do |c|
   c.modal = true
 
-  c.add_item(title: 'important URL', url: 'https://www.disney.com')
+  c.add_item(title: 'important URL', url: 'https://www.disney.com', suggested: true)
   c.add_item(title: 'boring URL', url: 'https://www.github.com')
 
   c.add_record_search(pattern: /^u(\d+)/, model: User, example: 'u123')

@@ -14,7 +14,9 @@ export type AppArgs = {
 export type Item = {
   title: string | JSX.Element
   url?: string
+  icon?: string
   modalHTML?: string
+  suggested?: boolean
   type: "default" | "help"
 }
 

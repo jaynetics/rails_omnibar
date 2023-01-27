@@ -21,14 +21,18 @@ describe RailsOmnibar do
     send_keys([:meta, 'm']) # meta modifier (⌘) should also be supported
     expect(page).to have_selector 'input'
 
+    # test suggested item functionality
+    expect(page).to have_content 'important URL'
+    expect(page).not_to have_content 'boring URL'
+
     # test fuzzy search for static items
     type('ou')
-    expect(page).to have_content 'boring URL'
     expect(page).to have_content 'important URL'
+    expect(page).to have_content 'boring URL'
 
     type('ori')
-    expect(page).to have_content 'boring URL'
     expect(page).not_to have_content 'important URL'
+    expect(page).to have_content 'boring URL'
 
     # test help modal
     expect(page).not_to have_content 'Available actions'

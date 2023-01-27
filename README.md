@@ -42,7 +42,8 @@ Omnibar = RailsOmnibar.configure do |c|
   c.hotkey = 't' # default is 'k'
 
   # Add static items that can be found by fuzzy typing.
-  c.add_item(title: 'Important link', url: 'https://www.disney.com')
+  # "suggested" items will be displayed before user starts typing.
+  c.add_item(title: 'Important link', url: 'https://www.disney.com', suggested: true)
   c.add_item(title: 'Important info', modal_html: '<b>You rock</b>')
 
   # Add all backoffice URLs as searchable items
@@ -50,7 +51,8 @@ Omnibar = RailsOmnibar.configure do |c|
     next unless route.defaults[:action] == 'index'
     next unless name = route.name[/^backoffice_(.+)/, 1]
 
-    c.add_item(title: name.humanize, url: route.format({}))
+    # items can have icons
+    c.add_item(title: name.humanize, url: route.format({}), icon: :cog)
   end
 
   # Add commands
@@ -140,7 +142,7 @@ MyOmnibar.add_record_search(
   example:  'U123',
   model:    User,
   finder:   ->(id)   { User.find_by(admin: true, id: id) },
-  itemizer: ->(user) { { title: "Admin #{user.name}", url: admin_url(user) } }
+  itemizer: ->(user) { { title: "Admin #{user.name}", url: admin_url(user), icon: :user } }
 )
 
 # Custom search, plus mapping to multiple results
