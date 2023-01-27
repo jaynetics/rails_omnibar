@@ -116,11 +116,18 @@ MyOmnibar.add_items(
 )
 
 # Add ActiveAdmin index routes as searchable items
-Admin::UsersController # trigger autoloading (use your own AA namespace)
+# in my_omnibar.rb:
 ActiveAdmin.application.namespaces.first.resources.each do |res|
   index = res.route_collection_path rescue next
   title = res.menu_item&.label.presence || next
   MyOmnibar.add_item(title: title, url: index)
+end
+# in initializers/active_admin.rb:
+# eager load menu entries for omnibar
+ActiveAdmin.after_load do |app|
+  app.namespaces.each do |namespace|
+    namespace.fetch_menu(ActiveAdmin::DEFAULT_MENU)
+  end
 end
 
 # Render in ActiveAdmin (`MyOmnibar.modal = true` recommended)
