@@ -1,13 +1,13 @@
 class RailsOmnibar
   def add_item(item)
+    check_const_and_clear_cache
     items << RailsOmnibar.cast_to_item(item)
-    clear_cache
-    self.class
+    self
   end
 
   def add_items(*args)
     args.each { |arg| add_item(arg) }
-    self.class
+    self
   end
 
   def self.cast_to_item(arg)

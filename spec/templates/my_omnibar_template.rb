@@ -34,7 +34,7 @@ MyOmnibar = RailsOmnibar.configure do |c|
     description: 'Get count of a DB table',
     pattern:     /COUNT (.+)/i,
     example:     'COUNT users',
-    resolver:    ->(value, _omnibar) do
+    resolver:    ->(value) do
       { title: value.classify.constantize.count.to_s }
     rescue => e
       { title: e.message }

@@ -8,6 +8,10 @@ class RailsOmnibar
     HTML
   end
 
+  def html_url
+    urls.html_path(omnibar_class: omnibar_class)
+  end
+
   require 'js_regex'
 
   def as_json(*)
@@ -19,7 +23,7 @@ class RailsOmnibar
       maxResults:     max_results,
       modal:          modal?,
       placeholder:    placeholder,
-      queryPath:      urls.query_path(omnibar_class: self.class),
+      queryPath:      urls.query_path(omnibar_class: omnibar_class),
     }
   end
 
@@ -29,7 +33,8 @@ class RailsOmnibar
 
   private
 
-  def clear_cache
+  def check_const_and_clear_cache
+    omnibar_class # trigger constant assignment check
     @cached_html = nil
   end
 end

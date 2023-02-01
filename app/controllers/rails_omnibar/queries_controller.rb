@@ -1,7 +1,7 @@
 class RailsOmnibar::QueriesController < RailsOmnibar::BaseController
   def show
-    omnibar = params['omnibar_class'].constantize
-    res = omnibar.handle(params[:q])
-    render json: omnibar.handle(params[:q])
+    return head :forbidden unless omnibar.authorize(self)
+
+    render json: omnibar.handle(params[:q], self)
   end
 end

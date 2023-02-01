@@ -12,12 +12,14 @@ describe RailsOmnibar do
     # test visibility toggling with hotkey
     expect(page).not_to have_selector 'input'
 
-    send_keys([:control, 'm']) # custom hotkey, c.f. app_template.rb
+    send_keys([:control, 'm']) # custom hotkey, c.f. my_omnibar_template.rb
     expect(page).to have_selector 'input'
 
+    sleep 0.1
     send_keys([:control, 'm'])
     expect(page).not_to have_selector 'input'
 
+    sleep 0.1
     send_keys([:meta, 'm']) # meta modifier (⌘) should also be supported
     expect(page).to have_selector 'input'
 
@@ -78,6 +80,34 @@ describe RailsOmnibar do
     # test custom command
     type('count users')
     expect(page).to have_content '2'
+
+    # test auth with devise
+    auth = ->(controller) { controller.user_signed_in? || true }
+    MyOmnibar.auth = auth
+    expect(auth).to receive(:call).at_least(:once).and_call_original
+    sleep 0.1 # not sure why this is needed ...
+    type('count users')
+    expect(page).to have_content '2'
+  end
+
+  it 'can have more than one omnibar' do
+    visit main_app.root_path
+    expect(page).to have_selector '#mount-rails-omnibar' # sanity check
+
+    expect(page).not_to have_selector 'input'
+    send_keys([:meta, 'a']) # custom hotkey, c.f. other_omnibar_template.rb
+    expect(page).to have_selector 'input'
+
+    # test suggested content from other omnibar is not there
+    expect(page).not_to have_content 'important URL'
+
+    # test fuzzy search for this bars' static items
+    type('dis')
+    expect(page).to have_content 'disney'
+
+    # test command from other omnibar does not run
+    type('g foobar')
+    expect(page).not_to have_content 'fake_result_1'
   end
 
   def type(str)

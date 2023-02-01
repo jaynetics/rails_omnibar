@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rails', ['>= 6.0', '< 8.0']
 
   spec.add_development_dependency 'capybara', '~> 3.0'
+  spec.add_development_dependency 'devise', '~> 4.8'
   spec.add_development_dependency 'factory_bot_rails', '~> 6.0'
   spec.add_development_dependency 'puma', '~> 5.0'
   spec.add_development_dependency 'rake', '~> 13.0'

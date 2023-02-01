@@ -15,15 +15,7 @@ Add `rails_omnibar` to your bundle and add the following line to your `config/ro
 mount RailsOmnibar::Engine => '/rails_omnibar'
 ```
 
-You can pick any path.
-
-To limit access, do something like this:
-
-```ruby
-authenticate :user, ->(user){ user.superadmin? } do
-  mount RailsOmnibar::Engine => '/rails_omnibar'
-end
-```
+You can pick any path. See [Authorization](#authorization) for limiting access to the engine.
 
 ### Configuration
 
@@ -97,33 +89,80 @@ Render it somewhere. E.g. `app/views/layouts/application.html.erb`:
 <%= Omnibar.render %>
 ```
 
+If you have a fully decoupled frontend, use `Omnibar.html_url` instead, fetch the omnibar HTML from there, and inject it.
+
+### Authorization
+
+You can limit access to commands (e.g. search commands). This will not limit access to plain items.
+
+#### Option 1: globally limit engine access
+
+```ruby
+authenticate :user, ->(user){ user.superadmin? } do
+  mount RailsOmnibar::Engine => '/rails_omnibar'
+end
+```
+
+#### Option 2: use `RailsOmnibar::auth=`
+
+This is useful for fine-grained authorization, e.g. if there is more than one omnibar or multiple permission levels.
+
+```ruby
+MyOmnibar.auth = ->(controller) { controller.user_signed_in? }
+```
+
+
 ### Using multiple different omnibars
 
 ```ruby
-UserOmnibar  = Class.new(RailsOmnibar).configure { ... }
-AdminOmnibar = Class.new(RailsOmnibar).configure { ... }
+BaseOmnibar  = Class.new(RailsOmnibar)
+BaseOmnibar.configure do |c|
+  c.add_item(
+    title: 'Log in',
+    url:    Rails.application.routes.url_helpers.log_in_url
+  )
+end
 
-UserOmnibar.render
-AdminOmnibar.render
+UserOmnibar = Class.new(RailsOmnibar)
+UserOmnibar.configure do |c|
+  c.auth = ->(controller) { controller.user_signed_in? }
+  c.add_item(
+    title: 'Log out',
+    url:    Rails.application.routes.url_helpers.log_out_url
+  )
+end
+```
+
+Then, in some layout:
+
+```erb
+<%= (user_signed_in? ? UserOmnibar : BaseOmnibar).render %>
 ```
 
 ### Other options and usage patterns
 
+#### Adding multiple items at once
+
 ```ruby
-# Add multiple items
 MyOmnibar.add_items(
   *MyRecord.all.map { |rec| { title: rec.title, url: url_for(rec) } }
 )
+```
 
-# Add ActiveAdmin index routes as searchable items
+#### Adding ActiveAdmin index routes as searchable items
+
+```ruby
 # in my_omnibar.rb:
+
 ActiveAdmin.application.namespaces.first.resources.each do |res|
   index = res.route_collection_path rescue next
   title = res.menu_item&.label.presence || next
   MyOmnibar.add_item(title: title, url: index)
 end
+
 # in initializers/active_admin.rb:
-# eager load menu entries for omnibar
+
+# Eager load menu entries for omnibar
 ActiveAdmin.after_load do |app|
   app.namespaces.each do |namespace|
     namespace.fetch_menu(ActiveAdmin::DEFAULT_MENU)
@@ -137,28 +176,42 @@ module AddOmnibar
   end
 end
 ActiveAdmin::Views::Pages::Base.prepend(AddOmnibar)
+```
 
-# Add all index routes as searchable items
+#### Adding all index routes as searchable items
+
+```ruby
 Rails.application.routes.routes.each do |route|
   next unless route.defaults.values_at(:action, :format) == ['index', nil]
   MyOmnibar.add_item(title: route.name.humanize, url: route.format({}))
 end
+```
 
-# Custom record lookup and rendering
+#### Custom record lookup and rendering
+
+```ruby
 MyOmnibar.add_record_search(
   pattern:  /^U(\d+)/,
   example:  'U123',
   model:    User,
-  finder:   ->(id)   { User.find_by(admin: true, id: id) },
-  itemizer: ->(user) { { title: "Admin #{user.name}", url: admin_url(user), icon: :user } }
+  finder:   ->(id) { User.find_by(admin: true, id: id) },
+  itemizer: ->(user) do
+    { title: "Admin #{user.name}", url: admin_url(user), icon: :user }
+  end
 )
+```
 
-# Custom search, plus mapping to multiple results
+#### Custom search, plus mapping to multiple results
+
+```ruby
 MyOmnibar.add_search(
   description: 'Google',
   pattern:     /^g (.+)/,
   example:     'g kittens',
-  finder:      ->(value) { GoogleSearch.fetch(value) },
+  # omnibar: and controller: keyword args are provided to command procs
+  finder:      ->(value, omnibar:) do
+    Google.search(value, limit: omnibar.max_results)
+  end,
   itemizer:    ->(res) do
     [
       { title: res.title, url: res.url },
@@ -166,14 +219,21 @@ MyOmnibar.add_search(
     ]
   end,
 )
+```
 
-# Completely custom command
+#### Completely custom command
+
+```ruby
 MyOmnibar.add_command(
   description: 'Get count of a DB table',
   pattern:     /COUNT (.+)/i,
   example:     'COUNT users',
-  resolver:    ->(value, _omnibar) do
-    { title: value.classify.constantize.count.to_s }
+  resolver:    ->(value, controller:) do
+    if controller.current_user.client?
+      { title: (value.classify.constantize.count * 2).to_s }
+    else
+      { title: value.classify.constantize.count.to_s }
+    end
   rescue => e
     { title: e.message }
   end,

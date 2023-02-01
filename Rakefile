@@ -16,7 +16,7 @@ task :generate_spec_app do
   sh 'rm -rf spec/dummy'
   sh *%w[
     rails new spec/dummy
-    --template=spec/app_template.rb
+    --template=spec/templates/app_template.rb
     --skip-action-cable
     --skip-action-mailbox
     --skip-action-mailer

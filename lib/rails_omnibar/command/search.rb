@@ -11,12 +11,16 @@ class RailsOmnibar
     # Generic search.
     class Search < Base
       def initialize(finder:, itemizer:, **kwargs)
-        finder   = cast_to_proc(finder, 1)
-        itemizer = cast_to_proc(itemizer, 1)
-        resolver = ->(value, omnibar) do
-          findings = finder.call(value)
+        finder   = RailsOmnibar.cast_to_proc(finder)
+        itemizer = RailsOmnibar.cast_to_proc(itemizer)
+
+        resolver = ->(value, controller:, omnibar:) do
+          findings = finder.call(value, controller: controller, omnibar: omnibar)
           findings = Array(findings) unless findings.respond_to?(:first)
-          findings.first(omnibar.max_results).flat_map(&itemizer)
+
+          findings.first(omnibar.max_results).flat_map do |finding|
+            itemizer.call(finding, controller: controller, omnibar: omnibar)
+          end
         end
 
         super(resolver: resolver, **kwargs)

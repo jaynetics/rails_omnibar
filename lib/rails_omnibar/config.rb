@@ -1,4 +1,16 @@
 class RailsOmnibar
+  def configure(&block)
+    check_const_and_clear_cache
+    tap(&block)
+  end
+
+  def auth=(arg)
+    @auth = RailsOmnibar.cast_to_proc(arg)
+  end
+  def authorize(controller)
+    @auth ? @auth.call(controller, controller: controller, omnibar: self) : true
+  end
+
   def max_results=(arg)
     arg.is_a?(Integer) && arg > 0 || raise(ArgumentError, 'max_results must be > 0')
     @max_results = arg
@@ -31,5 +43,17 @@ class RailsOmnibar
 
     help_item = items.find { |i| i.type == :help }
     help_item && "Hint: Type `#{help_item.title}` for help"
+  end
+
+  private
+
+  def omnibar_class
+    self.class.name || raise(<<~EOS)
+      RailsOmnibar subclasses must be assigned to constants
+      before configuring or rendering them. E.g.:
+
+      Foo = Class.new(RailsOmnibar)
+      Foo.configure { ... }
+    EOS
   end
 end
