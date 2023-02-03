@@ -17,7 +17,9 @@ mount RailsOmnibar::Engine => '/rails_omnibar'
 
 You can pick any path. See [Authorization](#authorization) for limiting access to the engine.
 
-### Configuration
+## Configuration
+
+### Basic Usage
 
 ```ruby
 # app/lib/omnibar.rb
