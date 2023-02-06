@@ -1,11 +1,11 @@
 gem 'rails_omnibar', path: __dir__ + '/../'
 gem 'devise'
 
+gsub_file 'config/application.rb', /#\s*(.*action_mailer.*)/, "\\1\nrequire 'devise'\n"
+
 generate 'model', 'User first_name:string last_name:string admin:boolean --no-test-framework'
 generate 'devise:install'
 generate 'devise User'
-
-prepend_to_file 'config/application.rb', "require 'devise'\n"
 
 file 'app/lib/my_omnibar.rb',    File.read(__dir__ + '/my_omnibar_template.rb')
 file 'app/lib/other_omnibar.rb', File.read(__dir__ + '/other_omnibar_template.rb')

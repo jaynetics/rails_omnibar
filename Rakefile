@@ -19,7 +19,6 @@ task :generate_spec_app do
     --template=spec/templates/app_template.rb
     --skip-action-cable
     --skip-action-mailbox
-    --skip-action-mailer
     --skip-action-text
     --skip-active-job
     --skip-active-storage
