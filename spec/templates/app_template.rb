@@ -1,7 +1,7 @@
 # template for dummy rails app used in specs
 
 gem 'rails_omnibar', path: __dir__ + '/../../'
-gem 'csv' # needed for activeadmin, standalone on Ruby >= 3.4
+gem 'csv'
 gem 'devise'
 gem 'activeadmin'
 
