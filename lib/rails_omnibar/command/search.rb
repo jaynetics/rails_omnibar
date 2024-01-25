@@ -37,6 +37,9 @@ class RailsOmnibar
         columns.present? || raise(ArgumentError, 'columns: must be given')
         columns.each { |c| c.in?(model.column_names) || raise(ArgumentError, "bad column #{c}") }
 
+        description = "Find #{model.name}"
+        description += " by #{columns.join(' OR ')}" unless finder
+
         # default finder, uses LIKE/ILIKE for non-id columns
         finder ||= ->(q) do
           return model.none if q.blank?
@@ -56,7 +59,7 @@ class RailsOmnibar
         end
 
         super(
-          description: "Find #{model.name} by #{columns.join(' OR ')}".tr('_', ' '),
+          description: description,
           example:     example,
           pattern:     pattern,
           finder:      finder,
