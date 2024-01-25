@@ -6,7 +6,6 @@ gem 'activeadmin'
 
 insert_into_file 'config/application.rb', <<~RUBY, after: /action_mailer.*\n/
   require 'action_mailer/railtie' # needed to make devise work
-  require 'activeadmin'
   require 'devise'
   require 'sprockets/railtie' # needed to make activeadmin work
 RUBY
