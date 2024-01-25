@@ -4,11 +4,18 @@ class RailsOmnibar
     tap(&block)
   end
 
+  attr_reader :auth
   def auth=(arg)
-    @auth = RailsOmnibar.cast_to_proc(arg)
+    @auth = arg.try(:arity) == 0 ? arg : RailsOmnibar.cast_to_proc(arg)
   end
   def authorize(controller)
-    @auth ? @auth.call(controller, controller: controller, omnibar: self) : true
+    if auth.nil?
+      true
+    elsif auth.arity == 0
+      controller.instance_exec(&auth)
+    else
+      auth.call(controller, controller: controller, omnibar: self)
+    end
   end
 
   def max_results=(arg)

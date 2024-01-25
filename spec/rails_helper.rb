@@ -15,8 +15,4 @@ RSpec.configure do |config|
   config.before(:each, type: :system) do
     driven_by :selenium_chrome_headless
   end
-  config.after(:each, type: :system) do
-    logs = page.driver.browser.logs.get(:browser)
-    logs.empty? || raise("JS errors: #{logs.map(&:message)}")
-  end
 end

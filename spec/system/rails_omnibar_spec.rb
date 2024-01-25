@@ -67,7 +67,7 @@ describe RailsOmnibar do
 
     # test navigation for item with #url
     submit
-    expect(page.current_url).to end_with '/users/2'
+    expect(page).to have_current_path '/users/2'
     send_keys([:control, 'm']) # make omnibar visible again
 
     # test generic search and multi-itemization
@@ -88,6 +88,15 @@ describe RailsOmnibar do
     sleep 0.1 # not sure why this is needed ...
     type('count users')
     expect(page).to have_content '2'
+
+    # test activeadmin integration
+    # stub sprockets so we don't need sassc etc.
+    allow_any_instance_of(Sprockets::Rails::Helper)
+      .to receive(:compute_asset_path)
+      .and_return('')
+
+    submit('Admin: Useroos')
+    expect(page).to have_current_path('/admin/users')
   end
 
   it 'can have more than one omnibar' do

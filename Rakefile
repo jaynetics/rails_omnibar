@@ -22,7 +22,6 @@ task :generate_spec_app do
     --skip-action-text
     --skip-active-job
     --skip-active-storage
-    --skip-asset-pipeline
     --skip-bootsnap
     --skip-bundle
     --skip-git
@@ -32,7 +31,6 @@ task :generate_spec_app do
     --skip-keeps
     --skip-listen
     --skip-spring
-    --skip-sprockets
     --skip-system-test
     --skip-test
     --skip-turbolinks

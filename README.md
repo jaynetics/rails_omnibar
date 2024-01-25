@@ -46,6 +46,7 @@ Omnibar = RailsOmnibar.configure do |c|
     next unless name = route.name[/^backoffice_(.+)/, 1]
 
     # items can have icons
+    # arrows, cloud, cog, dev, document, home, question, search, sparkle, user, wallet, x
     c.add_item(title: name.humanize, url: route.format({}), icon: :cog)
   end
 
@@ -110,14 +111,18 @@ end
 This is useful for fine-grained authorization, e.g. if there is more than one omnibar or multiple permission levels.
 
 ```ruby
-MyOmnibar.auth = ->(controller) { controller.user_signed_in? }
+# the auth proc is executed in the controller context by default,
+# but can also take the controller and omnibar as arguments
+MyOmnibar.auth = ->{ user_signed_in? }
+MyOmnibar.auth = ->(controller, omnibar:) do
+  controller.user_signed_in? && omnibar.is_a?(NormalUserOmnibar)
+end
 ```
-
 
 ### Using multiple different omnibars
 
 ```ruby
-BaseOmnibar  = Class.new(RailsOmnibar)
+BaseOmnibar = Class.new(RailsOmnibar)
 BaseOmnibar.configure do |c|
   c.add_item(
     title: 'Log in',
@@ -127,7 +132,7 @@ end
 
 UserOmnibar = Class.new(RailsOmnibar)
 UserOmnibar.configure do |c|
-  c.auth = ->(controller) { controller.user_signed_in? }
+  c.auth = ->{ user_signed_in? }
   c.add_item(
     title: 'Log out',
     url:    Rails.application.routes.url_helpers.log_out_url
@@ -151,27 +156,20 @@ MyOmnibar.add_items(
 )
 ```
 
-#### Adding ActiveAdmin index routes as searchable items
+#### Adding all ActiveAdmin or RailsAdmin index routes as searchable items
+
+Simply call `::add_webadmin_items` and use the `modal` mode.
 
 ```ruby
-# in my_omnibar.rb:
-
-ActiveAdmin.application.namespaces.first.resources.each do |res|
-  index = res.route_collection_path rescue next
-  title = res.menu_item&.label.presence || next
-  MyOmnibar.add_item(title: title, url: index)
+MyOmnibar.configure do |c|
+  c.add_webadmin_items
+  c.modal = true
 end
+```
 
-# in initializers/active_admin.rb:
+##### To render in ActiveAdmin
 
-# Eager load menu entries for omnibar
-ActiveAdmin.after_load do |app|
-  app.namespaces.each do |namespace|
-    namespace.fetch_menu(ActiveAdmin::DEFAULT_MENU)
-  end
-end
-
-# Render in ActiveAdmin (`MyOmnibar.modal = true` recommended)
+```ruby
 module AddOmnibar
   def build_page(...)
     within(super) { text_node(MyOmnibar.render) }
@@ -179,6 +177,10 @@ module AddOmnibar
 end
 ActiveAdmin::Views::Pages::Base.prepend(AddOmnibar)
 ```
+
+##### To render in RailsAdmin
+
+Add `MyOmnibar.render` to `app/views/layouts/rails_admin/application.*`.
 
 #### Adding all index routes as searchable items
 

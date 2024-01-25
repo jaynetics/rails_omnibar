@@ -4,6 +4,8 @@ MyOmnibar = RailsOmnibar.configure do |c|
   c.add_item(title: 'important URL', url: 'https://www.disney.com', suggested: true)
   c.add_item(title: 'boring URL', url: 'https://www.github.com')
 
+  c.add_webadmin_items(prefix: 'Admin:')
+
   c.add_record_search(pattern: /^u(\d+)/, model: User, example: 'u123')
 
   c.add_record_search(pattern: /^u (.+)/, model: User, columns: %i[first_name last_name],
