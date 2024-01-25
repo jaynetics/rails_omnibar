@@ -8,10 +8,12 @@ Bundler::GemHelper.install_tasks
 RSpec::Core::RakeTask.new
 task default: [:compile_js, :generate_spec_app, :spec]
 
+desc 'Compile the JavaScript'
 task :compile_js do
   sh 'npm run compile'
 end
 
+desc 'Generate a dummy rails app for testing'
 task :generate_spec_app do
   sh 'rm -rf spec/dummy'
   sh *%w[

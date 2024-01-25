@@ -6,7 +6,6 @@ export const useItemAction = (modal: ModalBag) => {
     (item: Item) => {
       if (!item) return
 
-      item = item as Item
       if (item.url) {
         window.location.href = item.url
       } else if (item.modalHTML) {

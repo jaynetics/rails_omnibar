@@ -1,6 +1,7 @@
 import React, {FunctionComponent, render} from "preact"
 import habitat from "preact-habitat"
 import Omnibar, {buildItemStyle} from "omnibar2"
+import {Globals} from "csstype"
 import {useItemAction, useOmnibarExtensions} from "./hooks"
 import {useHotkey, useModal, useToggleFocus} from "./hooks"
 import {AppArgs, INPUT_DATA_ID, Item, ModalArg} from "./types"
@@ -50,12 +51,13 @@ const RailsOmnibarAsModal: FunctionComponent<AppArgs & ModalArg> = (args) => {
 const renderItem = (
   props: Omnibar.ResultRendererArgs<Item> & {modal: boolean}
 ) => {
-  const {item} = props
+  const {item, onMouseEnter, onMouseLeave, onClick} = props
+  const handlers = {onMouseEnter, onMouseLeave, onClick} as Record<string, (e: any) => void>
   const style = buildItemStyle<Item>(props) as React.JSX.CSSProperties
   const Icon = iconClass(item.icon)
 
   return (
-    <div style={{...style, ...(props.modal ? MODAL_ROW_STYLE : ROW_STYLE)}}>
+    <div {...handlers} style={{...style, ...(props.modal ? MODAL_ROW_STYLE : ROW_STYLE)}}>
       {Icon && <Icon name={item.icon} style={ICON_STYLE} />}
       {item.title}
     </div>
@@ -76,7 +78,7 @@ const MODAL_ROW_STYLE = {
 }
 
 const ICON_STYLE = {
-  all: "revert",
+  all: "revert" as Globals,
   height: ROW_HEIGHT / 2,
   width: ROW_HEIGHT / 2,
   paddingRight: ROW_HEIGHT / 8,
