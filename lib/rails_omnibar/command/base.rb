@@ -3,7 +3,7 @@ class RailsOmnibar
     class Base
       attr_reader :pattern, :resolver, :description, :example
 
-      def initialize(resolver:, pattern: nil, description: nil, example: nil)
+      def initialize(pattern:, resolver:, description: nil, example: nil)
         @pattern = cast_to_pattern(pattern)
         @resolver = RailsOmnibar.cast_to_proc(resolver)
         @description = description
