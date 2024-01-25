@@ -10,6 +10,9 @@ insert_into_file 'config/application.rb', <<~RUBY, after: /action_mailer.*\n/
   require 'sprockets/railtie' # needed to make activeadmin work
 RUBY
 
+# https://github.com/activeadmin/activeadmin/pull/7235#issuecomment-1000823435
+insert_into_file 'config/environments/test.rb', 'false # ', after: /config.eager_load *=/
+
 generate 'model', 'User first_name:string last_name:string admin:boolean --no-test-framework'
 generate 'devise:install'
 generate 'devise User'
