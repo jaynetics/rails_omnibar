@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 group :development, :test do
-  gem 'activeadmin', '~> 2.13' # to test activeadmin integration
+  gem 'activeadmin', '~> 3.0' # to test activeadmin integration
   gem 'capybara', '~> 3.0'
   gem 'devise', '~> 4.8' # to test auth feature
   gem 'factory_bot_rails', '~> 6.0'
