@@ -29,7 +29,7 @@ class RailsOmnibar
 
     # ActiveRecord-specific search.
     class RecordSearch < Search
-      def initialize(model:, columns: :id, pattern: nil, finder: nil, itemizer: nil, example: nil)
+      def initialize(model:, columns: :id, pattern: nil, finder: nil, itemizer: nil, example: nil, if: nil)
         # casting and validations
         model = model.to_s.classify.constantize unless model.is_a?(Class)
         model < ActiveRecord::Base || raise(ArgumentError, 'model: must be a model')
@@ -64,6 +64,7 @@ class RailsOmnibar
           pattern:     pattern,
           finder:      finder,
           itemizer:    itemizer,
+          if:          binding.local_variable_get(:if),
         )
       end
     end

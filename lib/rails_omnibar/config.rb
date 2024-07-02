@@ -1,12 +1,14 @@
 class RailsOmnibar
   def configure(&block)
-    check_const_and_clear_cache
     tap(&block)
+    self.class
   end
 
-  attr_reader :auth
   def auth=(arg)
-    @auth = arg.try(:arity) == 0 ? arg : RailsOmnibar.cast_to_proc(arg)
+    config[:auth] = arg.try(:arity) == 0 ? arg : RailsOmnibar.cast_to_proc(arg)
+  end
+  def auth
+    config[:auth]
   end
   def authorize(controller)
     if auth.nil?
@@ -20,33 +22,39 @@ class RailsOmnibar
 
   def max_results=(arg)
     arg.is_a?(Integer) && arg > 0 || raise(ArgumentError, 'max_results must be > 0')
-    @max_results = arg
+    config[:max_results] = arg
   end
   def max_results
-    @max_results || 10
+    config[:max_results] || 10
   end
 
-  attr_writer :modal
+  def modal=(arg)
+    config[:modal] = arg
+  end
   def modal?
-    instance_variable_defined?(:@modal) ? !!@modal : false
+    config.key?(:modal) ? !!config[:modal] : false
   end
 
-  attr_writer :calculator
+  def calculator=(arg)
+    config[:calculator] = arg
+  end
   def calculator?
-    instance_variable_defined?(:@calculator) ? !!@calculator : true
+    config.key?(:calculator) ? !!config[:calculator] : true
   end
 
-  def hotkey
-    @hotkey || 'k'
-  end
   def hotkey=(arg)
     arg.to_s.size == 1 || raise(ArgumentError, 'hotkey must have length 1')
-    @hotkey = arg.to_s.downcase
+    config[:hotkey] = arg.to_s.downcase
+  end
+  def hotkey
+    config[:hotkey] || 'k'
   end
 
-  attr_writer :placeholder
+  def placeholder=(arg)
+    config[:placeholder] = arg
+  end
   def placeholder
-    return @placeholder.presence unless @placeholder.nil?
+    return config[:placeholder].presence unless config[:placeholder].nil?
 
     help_item = items.find { |i| i.type == :help }
     help_item && "Hint: Type `#{help_item.title}` for help"
@@ -54,13 +62,15 @@ class RailsOmnibar
 
   private
 
+  def config
+    @config ||= {}
+  end
+
   def omnibar_class
     self.class.name || raise(<<~EOS)
-      RailsOmnibar subclasses must be assigned to constants
-      before configuring or rendering them. E.g.:
+      RailsOmnibar subclasses must be assigned to constants, e.g.:
 
-      Foo = Class.new(RailsOmnibar)
-      Foo.configure { ... }
+      Foo = Class.new(RailsOmnibar).configure { ... }
     EOS
   end
 end

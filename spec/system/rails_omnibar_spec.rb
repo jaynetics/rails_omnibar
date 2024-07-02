@@ -119,6 +119,33 @@ describe RailsOmnibar do
     expect(page).not_to have_content 'fake_result_1'
   end
 
+  it 'can have conditional items and commands' do
+    visit main_app.root_path
+    send_keys([:control, 'm']) # custom hotkey, c.f. my_omnibar_template.rb
+    expect(page).to have_selector 'input'
+
+    type('condi')
+    expect(page).not_to have_content 'conditional item'
+
+    FactoryBot.create(:user)
+    expect { type('DELETE users'); sleep 0.3 }.not_to change { User.count }
+
+    # now again with truthy condition
+    ENV['FAKE_OMNIBAR_IF'] = '1'
+    refresh # reload page
+
+    send_keys([:control, 'm']) # custom hotkey, c.f. my_omnibar_template.rb
+    expect(page).to have_selector 'input'
+
+    type('condi')
+    expect(page).to have_content 'conditional item'
+
+    FactoryBot.create(:user)
+    expect { type('DELETE users'); sleep 0.3 }.to change { User.count }.to(0)
+  ensure
+    ENV['FAKE_OMNIBAR_IF'] = nil
+  end
+
   def type(str)
     find('input').set(str)
   end

@@ -1,9 +1,9 @@
 class RailsOmnibar
   module Item
     class Base
-      attr_reader :title, :url, :icon, :modal_html, :suggested, :type
+      attr_reader :title, :url, :icon, :modal_html, :suggested, :type, :if
 
-      def initialize(title:, url: nil, icon: nil, modal_html: nil, suggested: false, type: :default)
+      def initialize(title:, url: nil, icon: nil, modal_html: nil, suggested: false, type: :default, if: nil)
         url.present? && modal_html.present? && raise(ArgumentError, 'use EITHER url: OR modal_html:')
 
         @title      = validate_title(title)
@@ -12,10 +12,16 @@ class RailsOmnibar
         @modal_html = modal_html
         @suggested  = !!suggested
         @type       = type
+        @if         = RailsOmnibar.cast_to_condition(binding.local_variable_get(:if))
       end
 
       def as_json(*)
-        { title: title, url: url, icon: icon, modalHTML: modal_html, suggested: suggested, type: type }
+        @as_json ||=
+          { title: title, url: url, icon: icon, modalHTML: modal_html, suggested: suggested, type: type }
+      end
+
+      def render?(context:, omnibar:)
+        RailsOmnibar.evaluate_condition(self.if, context: context, omnibar: omnibar)
       end
 
       private

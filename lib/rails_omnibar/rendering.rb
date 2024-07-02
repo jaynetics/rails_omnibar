@@ -1,6 +1,7 @@
 class RailsOmnibar
-  def render
-    @cached_html ||= <<~HTML.html_safe
+  def render(context = nil)
+    @context = context
+    <<~HTML.html_safe
       <script src='#{urls.js_path}?v=#{RailsOmnibar::VERSION}' type='text/javascript'></script>
       <div id='mount-rails-omnibar'>
         <script type="application/json">#{to_json}</script>
@@ -17,9 +18,9 @@ class RailsOmnibar
   def as_json(*)
     {
       calculator:     calculator?,
-      commandPattern: JsRegex.new!(command_pattern, target: 'ES2018'),
+      commandPattern: command_pattern,
       hotkey:         hotkey,
-      items:          items,
+      items:          items.select { |i| i.render?(context: @context, omnibar: self) },
       maxResults:     max_results,
       modal:          modal?,
       placeholder:    placeholder,
@@ -29,12 +30,5 @@ class RailsOmnibar
 
   def urls
     @urls ||= RailsOmnibar::Engine.routes.url_helpers
-  end
-
-  private
-
-  def check_const_and_clear_cache
-    omnibar_class # trigger constant assignment check
-    @cached_html = nil
   end
 end

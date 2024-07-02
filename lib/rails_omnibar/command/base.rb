@@ -1,13 +1,14 @@
 class RailsOmnibar
   module Command
     class Base
-      attr_reader :pattern, :resolver, :description, :example
+      attr_reader :pattern, :resolver, :description, :example, :if
 
-      def initialize(pattern:, resolver:, description: nil, example: nil)
+      def initialize(pattern:, resolver:, description: nil, example: nil, if: nil)
         @pattern = cast_to_pattern(pattern)
         @resolver = RailsOmnibar.cast_to_proc(resolver)
         @description = description
         @example = example
+        @if = RailsOmnibar.cast_to_condition(binding.local_variable_get(:if))
       end
 
       def call(input, controller:, omnibar:)
@@ -17,6 +18,12 @@ class RailsOmnibar
         results = resolver.call(value, controller: controller, omnibar: omnibar)
         results = results.try(:to_ary) || [results]
         results.map { |e| RailsOmnibar.cast_to_item(e) }
+      end
+
+      def handle?(input, controller:, omnibar:)
+        return false unless pattern.match?(input)
+
+        RailsOmnibar.evaluate_condition(self.if, context: controller, omnibar: omnibar)
       end
 
       private

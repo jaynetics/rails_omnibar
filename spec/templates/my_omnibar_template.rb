@@ -3,6 +3,7 @@ MyOmnibar = RailsOmnibar.configure do |c|
 
   c.add_item(title: 'important URL', url: 'https://www.disney.com', suggested: true)
   c.add_item(title: 'boring URL', url: 'https://www.github.com')
+  c.add_item(title: 'conditional item', url: '#', if: -> { ENV['FAKE_OMNIBAR_IF'] })
 
   c.add_webadmin_items(prefix: 'Admin:')
 
@@ -41,6 +42,13 @@ MyOmnibar = RailsOmnibar.configure do |c|
     rescue => e
       { title: e.message }
     end,
+  )
+
+  c.add_command(
+    description: 'Delete users',
+    pattern:     /DELETE (.+)/i,
+    resolver:    ->(value){ { title: value.classify.constantize.delete_all.to_s } },
+    if:          ->{ ENV['FAKE_OMNIBAR_IF'] },
   )
 
   c.add_help

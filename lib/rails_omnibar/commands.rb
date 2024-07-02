@@ -1,17 +1,15 @@
 class RailsOmnibar
   def handle(input, controller)
-    handler = commands.find { |h| h.pattern.match?(input) }
+    handler = commands.find do |cmd|
+      cmd.handle?(input, controller: controller, omnibar: self)
+    end
     handler&.call(input, controller: controller, omnibar: self) || []
   end
 
-  def command_pattern
-    commands.any? ? Regexp.union(commands.map(&:pattern)) : /$NO_COMMANDS/
-  end
-
   def add_command(command)
-    check_const_and_clear_cache
     commands << RailsOmnibar.cast_to_command(command)
-    self
+    clear_command_pattern_cache
+    self.class
   end
 
   def self.cast_to_command(arg)
@@ -42,6 +40,17 @@ class RailsOmnibar
   end
 
   private
+
+  def command_pattern
+    @command_pattern ||= begin
+      re = commands.any? ? Regexp.union(commands.map(&:pattern)) : /$NO_COMMANDS/
+      JsRegex.new!(re, target: 'ES2018')
+    end
+  end
+
+  def clear_command_pattern_cache
+    @command_pattern = nil
+  end
 
   def commands
     @commands ||= []

@@ -53,10 +53,8 @@ describe RailsOmnibar do
     expect(subject.placeholder).to eq nil
   end
 
-  it 'raises when trying to configure or render from an anonymous class' do
+  it 'raises when trying to render from an anonymous class' do
     klass = Class.new(RailsOmnibar)
-    expect { klass.configure {} }.to raise_error(/constant/)
-    expect { klass.add_item(title: 'a', url: 'b') }.to raise_error(/constant/)
     expect { klass.render }.to raise_error(/constant/)
   end
 end

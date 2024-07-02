@@ -29,7 +29,7 @@ file 'app/lib/aa/users.rb',      File.read(__dir__ + '/user_resource_template.rb
 
 inject_into_class 'app/controllers/application_controller.rb', 'ApplicationController', <<-RUBY
   def index
-    render html: (MyOmnibar.render + OtherOmnibar.render)
+    render html: (MyOmnibar.render(self) + OtherOmnibar.render(self))
   end
 RUBY
 

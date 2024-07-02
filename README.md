@@ -89,14 +89,14 @@ end
 Render it somewhere. E.g. `app/views/layouts/application.html.erb`:
 
 ```erb
-<%= Omnibar.render %>
+<%= Omnibar.render(self) %>
 ```
 
 If you have a fully decoupled frontend, use `Omnibar.html_url` instead, fetch the omnibar HTML from there, and inject it.
 
 ### Authorization
 
-You can limit access to commands (e.g. search commands). This will not limit access to plain items.
+You can limit access to commands (e.g. search commands) and items.
 
 #### Option 1: globally limit engine access
 
@@ -119,19 +119,35 @@ MyOmnibar.auth = ->(controller, omnibar:) do
 end
 ```
 
+#### Option 3: Item-level conditionality
+
+Items and commands can have an `if` proc that is executed in the controller context. If it returns false, the item is not shown and the command is not executed.
+
+```ruby
+MyOmnibar.add_item(
+  title: 'Admin link',
+  url:   admin_url,
+  if:    ->{ current_user.admin? }
+)
+```
+
+For this to work, the controller context must be given to the omnibar when rendering (e.g. by passing `self` in a view):
+
+```erb
+<%= Omnibar.render(self) %>
+```
+
 ### Using multiple different omnibars
 
 ```ruby
-BaseOmnibar = Class.new(RailsOmnibar)
-BaseOmnibar.configure do |c|
+BaseOmnibar = Class.new(RailsOmnibar).configure do |c|
   c.add_item(
     title: 'Log in',
     url:    Rails.application.routes.url_helpers.log_in_url
   )
 end
 
-UserOmnibar = Class.new(RailsOmnibar)
-UserOmnibar.configure do |c|
+UserOmnibar = Class.new(RailsOmnibar).configure do |c|
   c.auth = ->{ user_signed_in? }
   c.add_item(
     title: 'Log out',
@@ -143,7 +159,15 @@ end
 Then, in some layout:
 
 ```erb
-<%= (user_signed_in? ? UserOmnibar : BaseOmnibar).render %>
+<%= (user_signed_in? ? UserOmnibar : BaseOmnibar).render(self) %>
+```
+
+Omnibars can also inherit commands, configuration, and items from existing omnibars:
+
+```ruby
+SuperuserOmnibar = Class.new(UserOmnibar).configure do |c|
+  # add more items that only superusers should get
+end
 ```
 
 ### Other options and usage patterns
@@ -172,7 +196,7 @@ end
 ```ruby
 module AddOmnibar
   def build_page(...)
-    within(super) { text_node(MyOmnibar.render) }
+    within(super) { text_node(MyOmnibar.render(self)) }
   end
 end
 ActiveAdmin::Views::Pages::Base.prepend(AddOmnibar)
@@ -180,7 +204,7 @@ ActiveAdmin::Views::Pages::Base.prepend(AddOmnibar)
 
 ##### To render in RailsAdmin
 
-Add `MyOmnibar.render` to `app/views/layouts/rails_admin/application.*`.
+Add `MyOmnibar.render(self)` to `app/views/layouts/rails_admin/application.*`.
 
 #### Adding all index routes as searchable items
 
