@@ -11,6 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
   habitat(App).render({selector: "#mount-rails-omnibar"})
 })
 
+document.addEventListener("turbo:load", () => {
+  habitat(App).render({selector: "#mount-rails-omnibar"})
+})
+
 const App: FunctionComponent<AppArgs> = (args) => {
   const itemModal = useModal()
   const toggleFocus = useToggleFocus()
