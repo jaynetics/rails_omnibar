@@ -2,7 +2,7 @@ import {useState} from "preact/hooks"
 
 export const useDelayedLoadingStyle = () => {
   const [enabled, setEnabled] = useState(false)
-  const [timer, setTimer] = useState<NodeJS.Timer | null>(null)
+  const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | null>(null)
 
   const startTimer = () => {
     if (timer) clearTimeout(timer)
