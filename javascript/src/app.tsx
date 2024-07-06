@@ -2,7 +2,7 @@ import React, {FunctionComponent, render} from "preact"
 import habitat from "preact-habitat"
 import Omnibar, {buildItemStyle} from "omnibar2"
 import {Globals} from "csstype"
-import {useItemAction, useOmnibarExtensions} from "./hooks"
+import {useDelayedLoadingStyle, useItemAction, useOmnibarExtensions} from "./hooks"
 import {useHotkey, useModal, useToggleFocus} from "./hooks"
 import {AppArgs, INPUT_DATA_ID, Item, ModalArg} from "./types"
 import {iconClass} from "./icon"
@@ -27,6 +27,7 @@ const App: FunctionComponent<AppArgs> = (args) => {
 const RailsOmnibar: FunctionComponent<AppArgs & ModalArg> = (args) => {
   const extensions = useOmnibarExtensions(args)
   const itemAction = useItemAction(args.itemModal)
+  const loadingStyle = useDelayedLoadingStyle();
 
   return (
     <>
@@ -35,10 +36,12 @@ const RailsOmnibar: FunctionComponent<AppArgs & ModalArg> = (args) => {
         extensions={extensions}
         maxResults={args.maxResults}
         onAction={itemAction}
+        onQueryStart={() => loadingStyle.startTimer()}
+        onQueryEnd={() => loadingStyle.stop()}
         placeholder={args.placeholder}
         children={(props) => renderItem({...props, modal: args.modal})}
         showEmpty
-        style={args.modal ? MODAL_ROW_STYLE : ROW_STYLE}
+        style={{...(args.modal ? MODAL_ROW_STYLE : ROW_STYLE), ...loadingStyle.style}}
       />
       {args.itemModal.modal}
     </>
