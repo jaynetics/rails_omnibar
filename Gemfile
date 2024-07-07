@@ -14,5 +14,5 @@ group :development, :test do
   gem 'rspec-rails', '~> 5.0'
   gem 'sqlite3', '~> 1.4'
   gem 'sprockets-rails', '~> 3.4' # for activeadmin
-  gem 'webdrivers', '~> 5.0'
+  gem 'selenium-webdriver', '~> 4.22'
 end

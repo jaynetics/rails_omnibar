@@ -3,7 +3,6 @@ require File.expand_path('dummy/config/environment', __dir__)
 require 'rspec/rails'
 
 require 'selenium/webdriver'
-require 'webdrivers/chromedriver'
 
 Capybara.server = :puma, { Silent: true }
 
