@@ -18,7 +18,7 @@ export const useDelayedLoadingStyle = () => {
 }
 
 const LOADING_STYLE = {
-  background: "repeating-linear-gradient(90deg, #000F, #0004 50%, #000F)",
+  background: "repeating-linear-gradient(45deg, #000F, #000D 30%, #0003 50%, #000D 70%, #000F)",
   backgroundClip: "text",
   backgroundPosition: "40000px",
   color: "#0001",
