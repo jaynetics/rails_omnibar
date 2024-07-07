@@ -12,7 +12,7 @@ group :development, :test do
   gem 'puma', '~> 6.0'
   gem 'rake', '~> 13.2'
   gem 'rspec-rails', '~> 6.0'
-  gem 'sqlite3', '~> 1.4'
-  gem 'sprockets-rails', '~> 3.4' # for activeadmin
   gem 'selenium-webdriver', '~> 4.22'
+  gem 'sprockets-rails', '~> 3.4' # for activeadmin
+  gem 'sqlite3', '~> 1.4'
 end
