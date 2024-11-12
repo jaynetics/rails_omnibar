@@ -6,11 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.9.0] - 2024-12-11
+
+### Added
+
+- support for multiple omnibars on the same page
+
 ### Fixed
 
 - relaxed rails version requirement
-- fixed handling of proc-based labels of activeadmin items
-- fixed repeated DOM ids when using multiple omnibars on the same page
 - fixed some items generated from active admin resources being mislabeled
 
 ## [1.8.0] - 2024-07-06
