@@ -20,6 +20,7 @@ class RailsOmnibar
         next unless (res.controller.action_methods & ['index', :index]).any?
         next unless index = res.route_collection_path rescue next
         next unless label = res.menu_item&.label.presence
+        label = label.call if label.respond_to?(:call)
 
         title = [prefix, label, suffix].compact.join(' ')
         add_item(title: title, url: index, icon: icon, suggested: suggested)

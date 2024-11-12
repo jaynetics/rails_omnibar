@@ -1,4 +1,4 @@
-MyOmnibar = RailsOmnibar.configure do |c|
+MyOmnibar = Class.new(RailsOmnibar).configure do |c|
   c.modal = true
 
   c.add_item(title: 'important URL', url: 'https://www.disney.com', suggested: true)

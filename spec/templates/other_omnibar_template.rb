@@ -1,5 +1,4 @@
-OtherOmnibar = Class.new(RailsOmnibar)
-OtherOmnibar.configure do |c|
+OtherOmnibar = Class.new(RailsOmnibar).configure do |c|
   c.modal = true
 
   c.add_item(title: 'disney', url: 'https://www.disney.com', suggested: true)

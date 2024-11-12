@@ -1,18 +1,24 @@
-import {useState} from "preact/hooks"
+import {useEffect, useRef, useState} from "preact/hooks"
 
 export const useDelayedLoadingStyle = () => {
   const [enabled, setEnabled] = useState(false)
-  const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | null>(null)
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const clear = () => {
+    timer.current && clearTimeout(timer.current)
+    timer.current = null
+  }
 
   const startTimer = () => {
-    if (timer) clearTimeout(timer)
-    setTimer(setTimeout(() => setEnabled(true), 100))
+    clear()
+    timer.current = setTimeout(() => setEnabled(true), 100)
   }
 
   const stop = () => {
-    if (timer) clearTimeout(timer)
+    clear()
     setEnabled(false)
   }
+
+  useEffect(() => () => { clear() }, [])
 
   return { style : enabled ? LOADING_STYLE : {}, startTimer, stop }
 }

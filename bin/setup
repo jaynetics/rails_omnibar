@@ -5,4 +5,4 @@ set -vx
 
 bundle install
 npm install
-npm run compile
+npm run build
