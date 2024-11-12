@@ -7,7 +7,7 @@ describe RailsOmnibar do
     expect(User.pluck(:id).sort).to eq [1, 2] # sanity check
 
     visit main_app.root_path
-    expect(page).to have_selector '#mount-rails-omnibar' # sanity check
+    expect(page).to have_selector '.mount-rails-omnibar' # sanity check
 
     # test visibility toggling with hotkey
     expect(page).not_to have_selector 'input'
@@ -32,6 +32,7 @@ describe RailsOmnibar do
     expect(page).to have_content 'important URL'
     expect(page).to have_content 'boring URL'
 
+    sleep 0.1
     type('ori')
     expect(page).not_to have_content 'important URL'
     expect(page).to have_content 'boring URL'
@@ -85,15 +86,11 @@ describe RailsOmnibar do
     auth = ->(controller) { controller.user_signed_in? || true }
     MyOmnibar.auth = auth
     expect(auth).to receive(:call).at_least(:once).and_call_original
-    sleep 0.1 # not sure why this is needed ...
+    type('')
+    expect(page).not_to have_content '2'
     type('count users')
+    sleep 0.1
     expect(page).to have_content '2'
-
-    # test activeadmin integration
-    # stub sprockets so we don't need sassc etc.
-    allow_any_instance_of(Sprockets::Rails::Helper)
-      .to receive(:compute_asset_path)
-      .and_return('')
 
     submit('Admin: Useroos')
     expect(page).to have_current_path('/admin/users')
@@ -101,7 +98,7 @@ describe RailsOmnibar do
 
   it 'can have more than one omnibar' do
     visit main_app.root_path
-    expect(page).to have_selector '#mount-rails-omnibar' # sanity check
+    expect(page).to have_selector '.mount-rails-omnibar' # sanity check
 
     expect(page).not_to have_selector 'input'
     send_keys([:meta, 'a']) # custom hotkey, c.f. other_omnibar_template.rb

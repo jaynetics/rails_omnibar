@@ -3,7 +3,7 @@ class RailsOmnibar
     @context = context
     <<~HTML.html_safe
       <script src='#{urls.js_path}?v=#{RailsOmnibar::VERSION}' type='text/javascript'></script>
-      <div id='mount-rails-omnibar'>
+      <div class='mount-rails-omnibar'>
         <script type="application/json">#{to_json}</script>
       </div>
     HTML

@@ -19,5 +19,5 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.7'
 
   spec.add_dependency 'js_regex'
-  spec.add_dependency 'rails', ['>= 6.0', '< 8.0']
+  spec.add_dependency 'rails', ['>= 6.0']
 end

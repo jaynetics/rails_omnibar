@@ -1,19 +1,28 @@
 import React, {FunctionComponent, render} from "preact"
-import habitat from "preact-habitat"
 import Omnibar, {buildItemStyle} from "omnibar2"
 import {Globals} from "csstype"
-import {useDelayedLoadingStyle, useItemAction, useOmnibarExtensions} from "./hooks"
+import {
+  useDelayedLoadingStyle,
+  useItemAction,
+  useOmnibarExtensions,
+} from "./hooks"
 import {useHotkey, useModal, useToggleFocus} from "./hooks"
 import {AppArgs, INPUT_DATA_ID, Item, ModalArg} from "./types"
 import {iconClass} from "./icon"
 
-document.addEventListener("DOMContentLoaded", () => {
-  habitat(App).render({selector: "#mount-rails-omnibar"})
-})
+const mount = () =>
+  document.querySelectorAll(".mount-rails-omnibar").forEach((node) => {
+    const propScript = node.querySelector("script[type='application/json']")
+    if (!propScript) return
 
-document.addEventListener("turbo:load", () => {
-  habitat(App).render({selector: "#mount-rails-omnibar"})
-})
+    const props = JSON.parse(propScript.innerHTML) as AppArgs
+    propScript.remove()
+    render(<App {...props} />, node)
+  })
+
+document.addEventListener("DOMContentLoaded", mount)
+
+document.addEventListener("turbo:load", mount)
 
 const App: FunctionComponent<AppArgs> = (args) => {
   const itemModal = useModal()
@@ -27,7 +36,7 @@ const App: FunctionComponent<AppArgs> = (args) => {
 const RailsOmnibar: FunctionComponent<AppArgs & ModalArg> = (args) => {
   const extensions = useOmnibarExtensions(args)
   const itemAction = useItemAction(args.itemModal)
-  const loadingStyle = useDelayedLoadingStyle();
+  const loadingStyle = useDelayedLoadingStyle()
 
   return (
     <>
@@ -41,7 +50,10 @@ const RailsOmnibar: FunctionComponent<AppArgs & ModalArg> = (args) => {
         placeholder={args.placeholder}
         children={(props) => renderItem({...props, modal: args.modal})}
         showEmpty
-        style={{...(args.modal ? MODAL_ROW_STYLE : ROW_STYLE), ...loadingStyle.style}}
+        style={{
+          ...(args.modal ? MODAL_ROW_STYLE : ROW_STYLE),
+          ...loadingStyle.style,
+        }}
       />
       {args.itemModal.modal}
     </>
@@ -59,12 +71,18 @@ const renderItem = (
   props: Omnibar.ResultRendererArgs<Item> & {modal: boolean}
 ) => {
   const {item, onMouseEnter, onMouseLeave, onClick} = props
-  const handlers = {onMouseEnter, onMouseLeave, onClick} as Record<string, (e: any) => void>
+  const handlers = {onMouseEnter, onMouseLeave, onClick} as Record<
+    string,
+    (e: any) => void
+  >
   const style = buildItemStyle<Item>(props) as React.JSX.CSSProperties
   const Icon = iconClass(item.icon)
 
   return (
-    <div {...handlers} style={{...style, ...(props.modal ? MODAL_ROW_STYLE : ROW_STYLE)}}>
+    <div
+      {...handlers}
+      style={{...style, ...(props.modal ? MODAL_ROW_STYLE : ROW_STYLE)}}
+    >
       {Icon && <Icon name={item.icon} style={ICON_STYLE} />}
       {item.title}
     </div>

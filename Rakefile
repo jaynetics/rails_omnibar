@@ -10,7 +10,7 @@ task default: [:compile_js, :generate_spec_app, :spec]
 
 desc 'Compile the JavaScript'
 task :compile_js do
-  sh 'npm run compile'
+  sh 'npm run build'
 end
 
 desc 'Generate a dummy rails app for testing'
@@ -24,6 +24,7 @@ task :generate_spec_app do
     --skip-action-text
     --skip-active-job
     --skip-active-storage
+    --skip-asset-pipeline
     --skip-bootsnap
     --skip-bundle
     --skip-git
@@ -54,6 +55,7 @@ task :dev_js do
     npm --prefix ../omnibar2 run build &&
     rm -rf node_modules/omnibar2 &&
     cp -r ../omnibar2 ./node_modules &&
+    rm -rf ./node_modules/omnibar2/node_modules &&
     rake compile_js
   SH
 end
