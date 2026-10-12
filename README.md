@@ -3,7 +3,7 @@
 
 # RailsOmnibar
 
-Add an Omnibar to Ruby on Rails.
+This adds an omnibar for power users to Ruby on Rails. The bar can appear as a permanent input field or a modal that pops up when you hit e.g. `CMD+K`. It can be used to quickly execute commands via a fuzzy search. Templates for many possible commands, like navigating to admin views or searching records, are built-in.
 
 ![Screenshot](https://user-images.githubusercontent.com/10758879/213940403-68400aab-6cc6-40ca-82fb-af049f07581b.gif)
 
@@ -40,7 +40,12 @@ Omnibar = RailsOmnibar.configure do |c|
   c.add_item(title: 'Important link', url: 'https://www.disney.com', suggested: true)
   c.add_item(title: 'Important info', modal_html: '<b>You rock</b>')
 
-  # Add all backoffice URLs as searchable items
+  # If ActiveAdmin or RailsAdmin are present, call this to add
+  # all index routes as searchable items (see below how to render
+  # the omnibar in the admin UI).
+  c.add_webadmin_items
+
+  # Add the index URLs of a custom backoffice as searchable items
   Rails.application.routes.routes.each do |route|
     next unless route.defaults[:action] == 'index'
     next unless name = route.name[/^backoffice_(.+)/, 1]
@@ -178,17 +183,6 @@ end
 MyOmnibar.add_items(
   *MyRecord.all.map { |rec| { title: rec.title, url: url_for(rec) } }
 )
-```
-
-#### Adding all ActiveAdmin or RailsAdmin index routes as searchable items
-
-Simply call `::add_webadmin_items` and use the `modal` mode.
-
-```ruby
-MyOmnibar.configure do |c|
-  c.add_webadmin_items
-  c.modal = true
-end
 ```
 
 ##### To render in ActiveAdmin
