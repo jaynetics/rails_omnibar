@@ -1,3 +1,4 @@
+import type {JSX} from "preact"
 import React, {useCallback, useMemo, useState} from "preact/hooks"
 import ReactModal from "react-modal"
 import {ModalBag} from "../types"

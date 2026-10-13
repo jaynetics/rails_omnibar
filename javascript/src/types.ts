@@ -1,3 +1,5 @@
+import type {JSX} from "preact"
+
 export const INPUT_DATA_ID = "rails-omnibar"
 
 export type AppArgs = {

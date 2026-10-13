@@ -68,7 +68,7 @@ const RailsOmnibarAsModal: FunctionComponent<AppArgs & ModalArg> = (args) => {
 }
 
 const renderItem = (
-  props: Omnibar.ResultRendererArgs<Item> & {modal: boolean}
+  props: Omnibar.ResultRendererArgs<Item> & {modal: boolean},
 ) => {
   const {item, onMouseEnter, onMouseLeave, onClick} = props
   const handlers = {onMouseEnter, onMouseLeave, onClick} as Record<
@@ -83,7 +83,7 @@ const renderItem = (
       {...handlers}
       style={{...style, ...(props.modal ? MODAL_ROW_STYLE : ROW_STYLE)}}
     >
-      {Icon && <Icon name={item.icon} style={ICON_STYLE} />}
+      {Icon && <Icon style={ICON_STYLE} title={item.icon} />}
       {item.title}
     </div>
   )

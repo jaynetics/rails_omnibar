@@ -8,13 +8,13 @@ jobs:
 
     strategy:
       matrix:
-        ruby: [ '3.2', '3.3' ]
+        ruby: [ '3.4', '4.0' ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 18
+          node-version: 24
       - name: Set up Ruby ${{ matrix.ruby }}
         uses: ruby/setup-ruby@v1
         with:
