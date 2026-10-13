@@ -35,6 +35,7 @@
 Gemfile.lock
 bbin/
 binstubs/*
+demo_app
 bundler_stubs/*/.yardoc
 mkmf.log
 package-lock.json

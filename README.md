@@ -3,9 +3,9 @@
 
 # RailsOmnibar
 
-This adds an omnibar for power users to Ruby on Rails. The bar can appear as a permanent input field or a modal that pops up when you hit e.g. `CMD+K`. It can be used to quickly execute commands via a fuzzy search. Templates for many possible commands, like navigating to admin views or searching records, are built-in.
+This adds an omnibar for power users to Ruby on Rails. The bar can appear as a permanent input field or a modal that pops up when you hit e.g. `⌘+K` or `Ctrl+K`. It can be used to quickly execute commands via a fuzzy search. Templates for many possible commands, like navigating to admin views or searching records, are built-in.
 
-![Screenshot](https://user-images.githubusercontent.com/10758879/213940403-68400aab-6cc6-40ca-82fb-af049f07581b.gif)
+[Preview](https://github.com/user-attachments/assets/3c03a749-a522-4f9e-b8a2-c67903b0d5e2)
 
 ## Installation
 
@@ -25,7 +25,7 @@ You can pick any path. See [Authorization](#authorization) for limiting access t
 # app/lib/omnibar.rb
 
 Omnibar = RailsOmnibar.configure do |c|
-  c.max_results = 5 # default is 10
+  c.max_results = 5 # The number of fuzzy search results to show. Default: 10.
 
   # Render as a modal that is hidden by default and toggled with a hotkey.
   # The default value for this setting is false - i.e. render inline.
@@ -36,13 +36,14 @@ Omnibar = RailsOmnibar.configure do |c|
   c.hotkey = 't' # default is 'k'
 
   # Add static items that can be found by fuzzy typing.
-  # "suggested" items will be displayed before user starts typing.
+  # "suggested" items will be displayed even before the user starts typing.
   c.add_item(title: 'Important link', url: 'https://www.disney.com', suggested: true)
   c.add_item(title: 'Important info', modal_html: '<b>You rock</b>')
 
-  # If ActiveAdmin or RailsAdmin are present, call this to add
-  # all index routes as searchable items (see below how to render
-  # the omnibar in the admin UI).
+  # If ActiveAdmin or RailsAdmin are present, call this method
+  # to add all resource index routes as searchable items.
+  # See the "Other options" section of this README on how to render
+  # the omnibar within these admin UIs.
   c.add_webadmin_items
 
   # Add the index URLs of a custom backoffice as searchable items
@@ -50,12 +51,14 @@ Omnibar = RailsOmnibar.configure do |c|
     next unless route.defaults[:action] == 'index'
     next unless name = route.name[/^backoffice_(.+)/, 1]
 
-    # items can have icons
-    # arrows, cloud, cog, dev, document, home, question, search, sparkle, user, wallet, x
+    # items can have icons:
+    # arrows, cloud, cog, dev, document, home, question, search,
+    # sparkle, user, wallet, x
     c.add_item(title: name.humanize, url: route.format({}), icon: :cog)
   end
 
   # Add commands
+  # ------------
 
   # This command will allow searching users by id by typing e.g. 'u123'.
   # The capture group is used to extract the value for the DB query.
@@ -65,7 +68,7 @@ Omnibar = RailsOmnibar.configure do |c|
     model:   User,
   )
 
-  # Search records by column(s) other than id (via LIKE query by default)
+  # Search records by column(s) other than id (via a LIKE query by default)
   c.add_record_search(
     pattern: /^u (.+)/,
     example: 'u Joe',
@@ -91,13 +94,13 @@ Omnibar = RailsOmnibar.configure do |c|
 end
 ```
 
-Render it somewhere. E.g. `app/views/layouts/application.html.erb`:
+To use the onmibar, you need to render it somewhere. E.g. in `app/views/layouts/application.html.erb`:
 
 ```erb
 <%= Omnibar.render(self) %>
 ```
 
-If you have a fully decoupled frontend, use `Omnibar.html_url` instead, fetch the omnibar HTML from there, and inject it.
+If you are not rendering your frontend within rails, you can pass the `Omnibar.html_url` to your frontend, fetch the omnibar HTML from there, and inject it into your page.
 
 ### Authorization
 
@@ -126,7 +129,7 @@ end
 
 #### Option 3: Item-level conditionality
 
-Items and commands can have an `if` proc that is executed in the controller context. If it returns false, the item is not shown and the command is not executed.
+Items and commands can have an `if` proc that is executed in the controller context. If it returns false, the item is not shown and the command can not be executed.
 
 ```ruby
 MyOmnibar.add_item(
@@ -136,11 +139,7 @@ MyOmnibar.add_item(
 )
 ```
 
-For this to work, the controller context must be given to the omnibar when rendering (e.g. by passing `self` in a view):
-
-```erb
-<%= Omnibar.render(self) %>
-```
+(By the way, this is the reason `self` needs to be passed when rendering the omnibar with `Omnibar.render(self)` – it provides the controller context in which methods like `current_user` can be evaluated.)
 
 ### Using multiple different omnibars
 
@@ -185,7 +184,11 @@ MyOmnibar.add_items(
 )
 ```
 
-##### To render in ActiveAdmin
+##### Rendering the omnibar in ActiveAdmin v4
+
+Run `rails g active_admin:views`. This will copy activeadmin's partials to your app so you can customize them. You only need to keep `views/layouts/active_admin.html.erb` for the omnibar. Edit it and add `MyOmnibar.render(self)` before `</body>`.
+
+##### Rendering the omnibar in ActiveAdmin v3
 
 ```ruby
 module AddOmnibar
@@ -196,7 +199,7 @@ end
 ActiveAdmin::Views::Pages::Base.prepend(AddOmnibar)
 ```
 
-##### To render in RailsAdmin
+##### Rendering the omnibar in RailsAdmin
 
 Add `MyOmnibar.render(self)` to `app/views/layouts/rails_admin/application.*`.
 
@@ -269,6 +272,7 @@ MyOmnibar.add_command(
 * Clone the repository
 * Go into the directory
 * Run `bin/setup` to install Ruby and JS dependencies
+* `bundle exec rake` prepares and runs all tests
 
 ## License
 
